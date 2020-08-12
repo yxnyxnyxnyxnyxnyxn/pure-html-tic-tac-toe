@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.button {
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.button2 {background-color: #008CBA;}
+</style>
+</head>
+<body>
+<div id="tic-tac-toe">
+<h5>Pure Html Tic Tac Toe</h5>
+<table id="board">
+</table>
+</div>
+
+<script>
+initializeBoard()
+const cells = document.querySelectorAll("td")
+let clickedCount = 0
+cells.forEach(cell=>{
+  cell.addEventListener('click', ()=>{
+    clickedCount += 1
+    let play = clickedCount % 2 == 0 ? 'X' : 'O'
+    cell.style.pointerEvents = "none"
+    cell.innerHTML = play
+    let rowIndex = cell.closest('tr').rowIndex
+    let columnIndex = cell.cellIndex
+    let isWinning = checkWin(rowIndex,columnIndex)
+    let winningTitle = `<h3> You Won! </h3>`
+    let restartButton = `<button class='button button2' onclick='restart()'>Restart!</button>`
+
+    if (isWinning){
+        document.getElementById('tic-tac-toe').innerHTML = `${winningTitle} </br> ${restartButton}`
+    }
+  })
+})
+
+function restart(){
+  document.getElementById('tic-tac-toe').innerHTML = `<h5>Pure Html Tic Tac Toe</h5><table id="board"></table>`
+  initializeBoard()
+}
+function initializeBoard(){
+  const LENGTH = 3
+  const columns = "<td>-</td>".repeat(LENGTH)
+  const rows =  `<tr>${columns}</tr>`.repeat(LENGTH)
+  let board = `<tbody>${rows}</tbody>`
+  document.getElementById('board').innerHTML = board
+}
+
+function checkWin(rowI,columnI){
+  const cells = document.querySelectorAll("td")
+  let rowCells = []
+  let columnCells = []
+  let line1 = []
+  let line2 = []
+  cells.forEach(cell=>{
+    let value = cell.innerHTML
+    let rowNumber = cell.parentElement.rowIndex
+    let columnNumber =  cell.cellIndex
+    if (rowNumber == rowI){
+      rowCells.push(value)
+    }
+    if (columnNumber == columnI){
+      columnCells.push(value)
+    }
+      if (rowNumber == 1 && columnNumber == 1){
+        line1.push(value)
+        line2.push(value)
+      }
+      if ((rowNumber == 0 && columnNumber == 0) || (rowNumber == 2 && columnNumber == 2)){
+        line1.push(value)
+      }
+      if ((rowNumber == 0 && columnNumber == 2) || (rowNumber == 2 && columnNumber == 0)){
+        line2.push(value)
+      }
+
+  })
+  return checkEqual(rowCells) || checkEqual(columnCells) || checkEqual(line1) || checkEqual(line2)
+}
+
+function checkEqual(arr){
+  return arr.every(c=> c!= "-" && c == arr[0])
+}
+
+</script>
+
+
+</body>
+</html>
